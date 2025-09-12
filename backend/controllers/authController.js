@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -9,23 +9,24 @@ export const registerUser = async (req, res) => {
 
     const userExist = await User.findOne({ email });
     if (userExist) {
-      return res.staus(400).json({ message: "User already exist" });
+      return res.status(400).json({ message: "User already exist" });
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const userObject = {
       name,
       email,
-      hashedPassword,
-      role,
+      password: hashedPassword,
+      role: role || "student",
     };
 
-    const user = await user.create(userObject);
-    res.staus(201).json({ message: "User registered successfully", user });
+    const user = await User.create(userObject);
+    res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
+    console.log(error);
   }
 };
 
@@ -50,13 +51,11 @@ export const loginUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    jwtUser = { id: user._id, name: user.name, role: user.role };
+    const jwtUser = { id: user._id, name: user.name, role: user.role };
 
     res.json({
-      token,
-      jwtUser
+      token
     });
-    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
