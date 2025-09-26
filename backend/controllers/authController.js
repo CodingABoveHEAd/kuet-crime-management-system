@@ -60,3 +60,16 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+// controllers/authController.js
+
+export const logoutUser = async (req, res) => {
+  try {
+    // On the client side, the token will be deleted from localStorage/cookies
+    // localStorage.removeItem("token");
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

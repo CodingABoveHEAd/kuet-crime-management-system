@@ -8,7 +8,7 @@ function MyComplaints() {
     const fetchComplaints = async () => {
       const token = localStorage.getItem("token");
       try {
-        const res = await axios.get("http://localhost:5001/api/complaints/my", {
+        const res = await axios.get("/api/complaints/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setComplaints(res.data);

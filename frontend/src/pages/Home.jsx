@@ -68,7 +68,7 @@ function Home() {
             </p>
             <div className="hero-buttons">
               <button className="cta-primary">
-                <span>Report Incident</span>
+                <span style={{color:'white'}}>Report Incident</span>
                 <span className="arrow">→</span>
               </button>
               <button className="cta-secondary">

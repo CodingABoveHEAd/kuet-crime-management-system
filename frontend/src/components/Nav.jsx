@@ -1,12 +1,41 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import "../styles/componentstyles/Navbar.css"
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import "../styles/componentstyles/Navbar.css";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
 
+    // Check login state on load
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        setIsLoggedIn(!!token);
+    }, []);
+
+    // Toggle mobile menu
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    // Logout handler
+    const handleLogout = async () => {
+        try {
+            // (Optional) Call backend logout API
+            await fetch("/api/auth/logout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
+
+            // Remove token from localStorage
+            localStorage.removeItem("token");
+            setIsLoggedIn(false);
+
+            // Redirect to home page
+            navigate("/");
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
     };
 
     return (
@@ -41,21 +70,29 @@ export default function Navbar() {
 
                 {/* Authentication Links */}
                 <div className="nav-auth">
-                    <Link to="/login" className="auth-link login-btn">
-                        Login
-                    </Link>
-                    <Link to="/register" className="auth-link register-btn">
-                        Register
-                    </Link>
+                    {!isLoggedIn ? (
+                        <>
+                            <Link to="/login" className="auth-link login-btn">
+                                Login
+                            </Link>
+                            <Link to="/register" className="auth-link register-btn">
+                                Register
+                            </Link>
+                        </>
+                    ) : (
+                        <button onClick={handleLogout} className="auth-link logout-btn">
+                            Logout
+                        </button>
+                    )}
                 </div>
 
                 {/* Mobile Menu Button */}
-                <button 
+                <button
                     className="mobile-menu-btn"
                     onClick={toggleMenu}
                     aria-label="Toggle mobile menu"
                 >
-                    <span className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
+                    <span className={`hamburger ${isMenuOpen ? "active" : ""}`}>
                         <span></span>
                         <span></span>
                         <span></span>
@@ -64,7 +101,7 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu */}
-            <div className={`mobile-menu ${isMenuOpen ? 'active' : ''}`}>
+            <div className={`mobile-menu ${isMenuOpen ? "active" : ""}`}>
                 <div className="mobile-links">
                     <Link to="/" className="mobile-link" onClick={toggleMenu}>
                         <span className="nav-icon">🏠</span>
@@ -74,17 +111,39 @@ export default function Navbar() {
                         <span className="nav-icon">📊</span>
                         Dashboard
                     </Link>
-                    <Link to="/complaint" className="mobile-link complaint-mobile" onClick={toggleMenu}>
+                    <Link
+                        to="/complaint"
+                        className="mobile-link complaint-mobile"
+                        onClick={toggleMenu}
+                    >
                         <span className="nav-icon">🚨</span>
                         File Complaint
                     </Link>
                     <div className="mobile-auth">
-                        <Link to="/login" className="mobile-auth-link" onClick={toggleMenu}>
-                            Login
-                        </Link>
-                        <Link to="/register" className="mobile-auth-link" onClick={toggleMenu}>
-                            Register
-                        </Link>
+                        {!isLoggedIn ? (
+                            <>
+                                <Link to="/login" className="mobile-auth-link" onClick={toggleMenu}>
+                                    Login
+                                </Link>
+                                <Link
+                                    to="/register"
+                                    className="mobile-auth-link"
+                                    onClick={toggleMenu}
+                                >
+                                    Register
+                                </Link>
+                            </>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    handleLogout();
+                                    toggleMenu();
+                                }}
+                                className="mobile-auth-link logout-btn"
+                            >
+                                Logout
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

@@ -86,6 +86,10 @@
   }
 }
 
+span{
+  color: white;
+}
+
 .hero-content {
   position: relative;
   z-index: 1;

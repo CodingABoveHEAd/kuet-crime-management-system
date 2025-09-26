@@ -312,7 +312,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 968px) {
   .nav-container {
     padding: 0 1rem;
   }
@@ -364,4 +364,18 @@
 
 .mobile-link.active {
   border-left-color: #2e7d32;
+}
+
+.logout-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #d9363e;
 }

@@ -9,21 +9,25 @@
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: linear-gradient(135deg, #f0f9f0 0%, #e8f5e8 100%);
-  min-height: 100vh;
+  /* min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 20px; */
 }
 
 .login-container {
   background: white;
-  padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(76, 175, 80, 0.1);
+  padding: 4rem 5rem;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(76, 175, 80, 0.12);
   width: 100%;
-  max-width: 400px;
+  max-width: 900px;
   border: 1px solid rgba(76, 175, 80, 0.1);
+  position: relative;
+  z-index: 1;
+  margin: auto;
+  margin-top:200px;
 }
 
 .login-container h2 {
