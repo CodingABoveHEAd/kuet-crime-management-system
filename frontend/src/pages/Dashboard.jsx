@@ -1,20 +1,21 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
-import "../styles/pagestyles/Dashboard.css"; // optional CSS
+import "../styles/pagestyles/Dashboard.css";
 
 function Dashboard() {
-  const { token, user } = useContext(AuthContext); // get token and user info
+  const { token, user } = useContext(AuthContext);
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch complaints
   useEffect(() => {
     const fetchComplaints = async () => {
+      if (!user) return; // <-- wait until user is loaded
+
       try {
         const endpoint =
-          user?.role === "admin" || user?.role === "authority"
+          user.role === "admin" || user.role === "authority"
             ? "/api/complaints/all"
             : "/api/complaints/my";
 
@@ -36,7 +37,6 @@ function Dashboard() {
     fetchComplaints();
   }, [token, user]);
 
-  // Admin updates status
   const handleStatusChange = async (complaintId, newStatus) => {
     try {
       await axios.put(
@@ -49,7 +49,6 @@ function Dashboard() {
         }
       );
 
-      // Update the state locally
       setComplaints((prev) =>
         prev.map((c) =>
           c._id === complaintId ? { ...c, status: newStatus } : c
@@ -60,6 +59,8 @@ function Dashboard() {
     }
   };
 
+  if (!user) return <p>Loading user info...</p>; // <-- wait for user
+
   if (loading) return <p>Loading dashboard...</p>;
   if (error) return <p>{error}</p>;
 
@@ -67,7 +68,7 @@ function Dashboard() {
     <div className="dashboard-container">
       <h2>Dashboard</h2>
       <p>
-        Welcome, <strong>{user?.name || "User"}</strong> ({user?.role})
+        Welcome, <strong>{user.name || "User"}</strong> ({user.role})
       </p>
 
       {complaints.length === 0 ? (
@@ -82,7 +83,7 @@ function Dashboard() {
               <th>Status</th>
               <th>Submitted By</th>
               <th>Created At</th>
-              {user?.role === "admin" || user?.role === "authority" ? <th>Actions</th> : null}
+              {(user.role === "admin" || user.role === "authority") && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -92,9 +93,9 @@ function Dashboard() {
                 <td>{c.description}</td>
                 <td>{c.category}</td>
                 <td>{c.status}</td>
-                <td>{c.user?.name || user?.name}</td>
+                <td>{c.user?.name || user.name}</td>
                 <td>{new Date(c.createdAt).toLocaleString()}</td>
-                {user?.role === "admin" || user?.role === "authority" ? (
+                {(user.role === "admin" || user.role === "authority") && (
                   <td>
                     <select
                       value={c.status}
@@ -105,7 +106,7 @@ function Dashboard() {
                       <option value="Resolved">Resolved</option>
                     </select>
                   </td>
-                ) : null}
+                )}
               </tr>
             ))}
           </tbody>
