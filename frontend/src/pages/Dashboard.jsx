@@ -1,4 +1,382 @@
+import { useEffect, useState, useContext } from "react";
+import axios from "axios";
+import AuthContext from "../context/AuthContext";
+import "../styles/pagestyles/Dashboard.css";
+
 function Dashboard() {
-  return <h2>Dashboard (for users & admins)</h2>;
+  const { token, user } = useContext(AuthContext);
+  const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedImages, setSelectedImages] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    underReview: 0,
+    resolved: 0
+  });
+
+  useEffect(() => {
+    const fetchComplaints = async () => {
+      if (!user) return;
+
+      try {
+        const endpoint =
+          user.role === "admin" || user.role === "authority"
+            ? "/api/complaints/all"
+            : "/api/complaints/my";
+
+        const res = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${token || localStorage.getItem("token")}`,
+          },
+        });
+
+        setComplaints(res.data);
+        calculateStats(res.data);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError(err.response?.data?.message || "Failed to fetch complaints");
+        setLoading(false);
+      }
+    };
+
+    fetchComplaints();
+  }, [token, user]);
+
+  const calculateStats = (complaintsData) => {
+    const total = complaintsData.length;
+    const pending = complaintsData.filter(c => c.status === "Pending").length;
+    const underReview = complaintsData.filter(c => c.status === "Under Review").length;
+    const resolved = complaintsData.filter(c => c.status === "Resolved").length;
+    
+    setStats({ total, pending, underReview, resolved });
+  };
+
+  const handleStatusChange = async (complaintId, newStatus) => {
+    try {
+      await axios.put(
+        `/api/complaints/${complaintId}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token || localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const updatedComplaints = complaints.map((c) =>
+        c._id === complaintId ? { ...c, status: newStatus } : c
+      );
+      setComplaints(updatedComplaints);
+      calculateStats(updatedComplaints);
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to update status");
+    }
+  };
+
+  // Handle multiple images
+  const getComplaintImages = (complaint) => {
+    // Support both single image and multiple images
+    if (complaint.images && Array.isArray(complaint.images)) {
+      return complaint.images;
+    } else if (complaint.image) {
+      return [complaint.image];
+    }
+    return [];
+  };
+
+  const openImageModal = (images, startIndex = 0) => {
+    setSelectedImages(images);
+    setCurrentImageIndex(startIndex);
+  };
+
+  const closeImageModal = () => {
+    setSelectedImages(null);
+    setCurrentImageIndex(0);
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => 
+      prev < selectedImages.length - 1 ? prev + 1 : 0
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => 
+      prev > 0 ? prev - 1 : selectedImages.length - 1
+    );
+  };
+
+  const goToImage = (index) => {
+    setCurrentImageIndex(index);
+  };
+
+  const renderImageGallery = (complaint) => {
+    const images = getComplaintImages(complaint);
+    
+    if (images.length === 0) {
+      return (
+        <div className="no-image-placeholder">
+          📷
+        </div>
+      );
+    }
+
+    if (images.length === 1) {
+      return (
+        <div className="complaint-images-gallery single">
+          <img
+            src={images[0]}
+            alt="Complaint Evidence"
+            className="complaint-image"
+            onClick={() => openImageModal(images, 0)}
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (images.length <= 3) {
+      return (
+        <div className="complaint-images-gallery compact">
+          {images.map((image, index) => (
+            <img
+              key={index}
+              src={image}
+              alt={`Evidence ${index + 1}`}
+              className="complaint-image"
+              onClick={() => openImageModal(images, index)}
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+          ))}
+        </div>
+      );
+    }
+
+    // For 4+ images, show first 3 + counter
+    return (
+      <div className="complaint-images-gallery compact">
+        {images.slice(0, 3).map((image, index) => (
+          <img
+            key={index}
+            src={image}
+            alt={`Evidence ${index + 1}`}
+            className="complaint-image"
+            onClick={() => openImageModal(images, index)}
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        ))}
+        <div 
+          className="images-counter"
+          onClick={() => openImageModal(images, 3)}
+          title={`View all ${images.length} images`}
+        >
+          +{images.length - 3}
+        </div>
+      </div>
+    );
+  };
+
+  const getPriorityClass = (priority) => {
+    switch (priority?.toLowerCase()) {
+      case "high": return "priority-high";
+      case "medium": return "priority-medium";
+      case "low": return "priority-low";
+      default: return "priority-medium";
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  // Keyboard navigation for modal
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (selectedImages) {
+        switch (e.key) {
+          case 'ArrowLeft':
+            prevImage();
+            break;
+          case 'ArrowRight':
+            nextImage();
+            break;
+          case 'Escape':
+            closeImageModal();
+            break;
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [selectedImages]);
+
+  if (!user) return (
+    <div className="dashboard-container">
+      <p>🔐 Loading user information...</p>
+    </div>
+  );
+
+  if (loading) return (
+    <div className="dashboard-container">
+      <p>⏳ Loading dashboard data...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="dashboard-container">
+      <p>❌ {error}</p>
+    </div>
+  );
+
+  return (
+    <div className="dashboard-container">
+      <h2>📊 Crime Management Dashboard</h2>
+      <p>
+        Welcome back, <strong>{user.name || "User"}</strong> • Role: {user.role.toUpperCase()}
+      </p>
+
+      {/* Statistics Cards */}
+      <div className="dashboard-stats">
+        <div className="stat-card">
+          <h3>{stats.total}</h3>
+          <p>Total Complaints</p>
+        </div>
+        <div className="stat-card">
+          <h3>{stats.pending}</h3>
+          <p>Pending Review</p>
+        </div>
+        <div className="stat-card">
+          <h3>{stats.underReview}</h3>
+          <p>Under Investigation</p>
+        </div>
+        <div className="stat-card">
+          <h3>{stats.resolved}</h3>
+          <p>Resolved Cases</p>
+        </div>
+      </div>
+
+      {complaints.length === 0 ? (
+        <p>📝 No complaints found. Your dashboard is clean!</p>
+      ) : (
+        <table className="complaints-table">
+          <thead>
+            <tr>
+              <th>🖼️ Evidence</th>
+              <th>📋 Title</th>
+              <th>📝 Description</th>
+              <th>🏷️ Category</th>
+              <th>📊 Status</th>
+              <th>👤 Submitted By</th>
+              <th>📅 Date & Time</th>
+              {(user.role === "admin" || user.role === "authority") && <th>⚙️ Actions</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {complaints.map((complaint) => (
+              <tr key={complaint._id}>
+                <td className="complaint-image-cell" data-label="Evidence">
+                  {renderImageGallery(complaint)}
+                </td>
+                <td data-label="Title">
+                  {complaint.priority && (
+                    <span className={`priority-indicator ${getPriorityClass(complaint.priority)}`}>
+                      {complaint.priority}
+                    </span>
+                  )}
+                  {complaint.title}
+                </td>
+                <td data-label="Description">{complaint.description}</td>
+                <td data-label="Category">{complaint.category}</td>
+                <td data-label="Status" data-status={complaint.status}>{complaint.status}</td>
+                <td data-label="Submitted By">{complaint.user?.name || user.name}</td>
+                <td data-label="Date & Time">{formatDate(complaint.createdAt)}</td>
+                {(user.role === "admin" || user.role === "authority") && (
+                  <td data-label="Actions">
+                    <select
+                      value={complaint.status}
+                      onChange={(e) => handleStatusChange(complaint._id, e.target.value)}
+                    >
+                      <option value="Pending">⏳ Pending</option>
+                      <option value="Under Review">👀 Under Review</option>
+                      <option value="Resolved">✅ Resolved</option>
+                    </select>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* Enhanced Image Modal with Navigation */}
+      {selectedImages && (
+        <div className={`image-modal ${selectedImages ? 'active' : ''}`} onClick={closeImageModal}>
+          <button className="image-modal-close" onClick={closeImageModal}>
+            ×
+          </button>
+          
+          <img
+            src={selectedImages[currentImageIndex]}
+            alt={`Evidence ${currentImageIndex + 1} of ${selectedImages.length}`}
+            className="image-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          />
+          
+          {selectedImages.length > 1 && (
+            <>
+              <div className="image-modal-nav">
+                <button 
+                  onClick={prevImage}
+                  disabled={selectedImages.length <= 1}
+                >
+                  ← Previous
+                </button>
+                <span className="image-modal-counter">
+                  {currentImageIndex + 1} of {selectedImages.length}
+                </span>
+                <button 
+                  onClick={nextImage}
+                  disabled={selectedImages.length <= 1}
+                >
+                  Next →
+                </button>
+              </div>
+              
+              <div className="image-modal-thumbnails">
+                {selectedImages.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Thumbnail ${index + 1}`}
+                    className={`image-modal-thumbnail ${index === currentImageIndex ? 'active' : ''}`}
+                    onClick={() => goToImage(index)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
+
 export default Dashboard;

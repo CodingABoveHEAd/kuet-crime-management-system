@@ -19,7 +19,7 @@ export const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || "student",
+      role: role || "user",
     };
 
     const user = await User.create(userObject);
@@ -38,24 +38,36 @@ export const loginUser = async (req, res) => {
     // Check user
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
-
+    //console.log("User from DB:", user.toObject());
     // Match password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
-
+const jwtUser = { id: user._id, name: user.name, role: user.role };
+// console.log("JWT Payload:", jwtUser); 
     // Generate token
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      jwtUser,
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    const jwtUser = { id: user._id, name: user.name, role: user.role };
-
     res.json({
       token
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// controllers/authController.js
+
+export const logoutUser = async (req, res) => {
+  try {
+    // On the client side, the token will be deleted from localStorage/cookies
+    // localStorage.removeItem("token");
+    res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
