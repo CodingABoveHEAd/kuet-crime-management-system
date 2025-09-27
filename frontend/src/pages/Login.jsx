@@ -1,31 +1,30 @@
 import { useState, useContext } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";   // ⬅️ import AuthContext
+//import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 import "../styles/pagestyles/Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const { login } = useContext(AuthContext);  // ⬅️ get login method
+  //const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post("/api/auth/login", { email, password });
 
-      alert("Login Successful");
+      const token = res.data.token;
 
-      // Save token in localStorage
-      localStorage.setItem("token", res.data.token);
+      // Call login with token only; AuthContext will decode and set user
+      login(null, token);
 
-      // Call AuthContext login (pass token, user if available)
-      // Currently backend only returns token, so we pass null for user
-      login(null, res.data.token);
+      // Save token in localStorage (already done inside AuthContext)
+      localStorage.setItem("token", token);
 
-      // Redirect
-      navigate("/dashboard");
+      // Force reload to ensure AuthContext updates
+      window.location.href = "/dashboard"; // this reloads the page and redirects
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
     }

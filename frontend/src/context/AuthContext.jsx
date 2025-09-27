@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
         const U = {
           id: decoded.id,
           role: decoded.role,
-          name: decoded.name, // fallback if name isn't in token
+          name: decoded.name,
         };
         console.log(U);
         setUser(U);
