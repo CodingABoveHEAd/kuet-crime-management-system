@@ -38,21 +38,19 @@ export const loginUser = async (req, res) => {
     // Check user
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
-    console.log("User from DB:", user.toObject());
+    //console.log("User from DB:", user.toObject());
     // Match password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 const jwtUser = { id: user._id, name: user.name, role: user.role };
-console.log("JWT Payload:", jwtUser); 
+// console.log("JWT Payload:", jwtUser); 
     // Generate token
     const token = jwt.sign(
       jwtUser,
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-
-    
 
     res.json({
       token
