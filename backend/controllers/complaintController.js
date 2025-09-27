@@ -10,7 +10,7 @@ export const createComplaint = async (req, res) => {
       title,
       description,
       category,
-      evidence,
+      evidence, //strictmode false
     });
 
     res.status(201).json({ message: "Complaint submitted successfully", complaint });
@@ -46,9 +46,17 @@ export const getAllComplaints = async (req, res) => {
 };
 
 // Update complaint status
+// Update complaint status (admin only)
 export const updateComplaintStatus = async (req, res) => {
   try {
     const { status } = req.body;
+
+    // Validate allowed status
+    const allowedStatuses = ["Pending", "Under Review", "Resolved"];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
     const complaint = await Complaint.findById(req.params.id);
     if (!complaint) return res.status(404).json({ message: "Complaint not found" });
 
@@ -57,7 +65,6 @@ export const updateComplaintStatus = async (req, res) => {
 
     res.json({ message: "Complaint status updated", complaint });
   } catch (error) {
-    //console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Server error, please try again later" });
   }
 };
