@@ -11,12 +11,13 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decoded = jwtDecode(token); // Changed to jwtDecode
-        console.log(decoded);
+        
         const U = {
           id: decoded.id,
           role: decoded.role,
-          name: decoded.name || "" // fallback if name isn't in token
+          name: decoded.name, // fallback if name isn't in token
         };
+        console.log(U);
         setUser(U);
       } catch (error) {
         console.error("Invalid token:", error);
