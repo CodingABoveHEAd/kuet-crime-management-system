@@ -1,31 +1,41 @@
 import { useState } from "react";
 import axios from "axios";
-import "../styles/pagestyles/ComplaintForm.css"
+import "../styles/pagestyles/ComplaintForm.css";
 
 function ComplaintForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Harassment");
+  const [evidence, setEvidence] = useState([]); // ✅ multiple files
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-    if (!token) return alert("You must be logged in to submit a complaint");
+    if (!token) {
+      return alert("You must be logged in to submit a complaint");
+    }
 
     try {
-      const res = await axios.post(
-        "/api/complaints/",
-        { title, description, category },
-        { headers: { Authorization: `Bearer ${token}` } } // send token in header
-      );
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("category", category);
+      evidence.forEach((file) => formData.append("evidence", file)); // ✅ multiple
+
+      const res = await axios.post("/api/complaints/", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       alert(res.data.message);
       setTitle("");
       setDescription("");
       setCategory("Harassment");
+      setEvidence([]);
     } catch (error) {
-      // console.error("❌ Complaint error:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Failed to submit complaint");
     }
   };
@@ -52,7 +62,11 @@ function ComplaintForm() {
             required
           />
           <br />
-          <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+          <select
+            className="form-select"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
             <option value="Harassment">Harassment</option>
             <option value="Bullying">Bullying</option>
             <option value="Ragging">Ragging</option>
@@ -61,7 +75,16 @@ function ComplaintForm() {
             <option value="Other">Other</option>
           </select>
           <br />
-          <button className="submit-btn" type="submit">Submit</button>
+          <input
+            type="file"
+            accept="image/*"
+            multiple // ✅ multiple selection
+            onChange={(e) => setEvidence(Array.from(e.target.files))}
+          />
+          <br />
+          <button className="submit-btn" type="submit">
+            Submit
+          </button>
         </form>
       </div>
     </div>

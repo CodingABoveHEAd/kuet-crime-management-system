@@ -7,7 +7,7 @@ const complaintSchema = new mongoose.Schema(
     description: { type: String, required: true },
     category: { type: String, default: "Other" },
     status: { type: String, enum: ["Pending", "Under Review", "Resolved"], default: "Pending" },
-    //evidence: { type: String }, // URL or path to uploaded file
+    evidence: [{ type: String }], // URL or path to uploaded file
   },
   { timestamps: true }
 );

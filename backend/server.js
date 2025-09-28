@@ -1,8 +1,9 @@
+import dotenv from "dotenv";
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';    
-import dotenv from "dotenv";
+
 import connectDB from "./config/db.js"
 import authRoutes from "./routes/authRoutes.js"
 import complaintRoutes from "./routes/complaintRoutes.js"
