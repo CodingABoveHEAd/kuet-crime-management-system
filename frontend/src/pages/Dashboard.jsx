@@ -77,20 +77,40 @@ function Dashboard() {
     }
   };
 
-  // Handle multiple images
+  // Handle multiple images - enhanced logic
   const getComplaintImages = (complaint) => {
-    // Support both single image and multiple images
-    if (complaint.images && Array.isArray(complaint.images)) {
-      return complaint.images;
-    } else if (complaint.image) {
-      return [complaint.image];
+    const images = [];
+    
+    // Check for evidence array (your model's field name)
+    if (complaint.evidence && Array.isArray(complaint.evidence) && complaint.evidence.length > 0) {
+      images.push(...complaint.evidence);
     }
-    return [];
+    
+    // Backward compatibility: Check for images array
+    if (complaint.images && Array.isArray(complaint.images) && complaint.images.length > 0) {
+      complaint.images.forEach(img => {
+        if (!images.includes(img)) {
+          images.push(img);
+        }
+      });
+    }
+    
+    // Backward compatibility: Check for single image field
+    if (complaint.image && typeof complaint.image === 'string' && complaint.image.trim() !== '') {
+      if (!images.includes(complaint.image)) {
+        images.push(complaint.image);
+      }
+    }
+    
+    // Filter out any invalid URLs or empty strings
+    return images.filter(img => img && typeof img === 'string' && img.trim() !== '' && img.startsWith('http'));
   };
 
   const openImageModal = (images, startIndex = 0) => {
-    setSelectedImages(images);
-    setCurrentImageIndex(startIndex);
+    if (images && images.length > 0) {
+      setSelectedImages(images);
+      setCurrentImageIndex(startIndex);
+    }
   };
 
   const closeImageModal = () => {
@@ -98,19 +118,22 @@ function Dashboard() {
     setCurrentImageIndex(0);
   };
 
-  const nextImage = () => {
+  const nextImage = (e) => {
+    e?.stopPropagation();
     setCurrentImageIndex((prev) => 
       prev < selectedImages.length - 1 ? prev + 1 : 0
     );
   };
 
-  const prevImage = () => {
+  const prevImage = (e) => {
+    e?.stopPropagation();
     setCurrentImageIndex((prev) => 
       prev > 0 ? prev - 1 : selectedImages.length - 1
     );
   };
 
-  const goToImage = (index) => {
+  const goToImage = (index, e) => {
+    e?.stopPropagation();
     setCurrentImageIndex(index);
   };
 
@@ -120,7 +143,7 @@ function Dashboard() {
     if (images.length === 0) {
       return (
         <div className="no-image-placeholder">
-          📷
+          <span>📷</span>
         </div>
       );
     }
@@ -135,6 +158,7 @@ function Dashboard() {
             onClick={() => openImageModal(images, 0)}
             onError={(e) => {
               e.target.style.display = 'none';
+              e.target.parentElement.innerHTML = '<div class="no-image-placeholder"><span>📷</span></div>';
             }}
           />
         </div>
@@ -143,7 +167,7 @@ function Dashboard() {
 
     if (images.length <= 3) {
       return (
-        <div className="complaint-images-gallery compact">
+        <div className={`complaint-images-gallery grid-${images.length}`}>
           {images.map((image, index) => (
             <img
               key={index}
@@ -152,7 +176,8 @@ function Dashboard() {
               className="complaint-image"
               onClick={() => openImageModal(images, index)}
               onError={(e) => {
-                e.target.style.display = 'none';
+                e.target.style.opacity = '0.3';
+                e.target.style.border = '2px dashed #ccc';
               }}
             />
           ))}
@@ -162,7 +187,7 @@ function Dashboard() {
 
     // For 4+ images, show first 3 + counter
     return (
-      <div className="complaint-images-gallery compact">
+      <div className="complaint-images-gallery grid-more">
         {images.slice(0, 3).map((image, index) => (
           <img
             key={index}
@@ -171,7 +196,8 @@ function Dashboard() {
             className="complaint-image"
             onClick={() => openImageModal(images, index)}
             onError={(e) => {
-              e.target.style.display = 'none';
+              e.target.style.opacity = '0.3';
+              e.target.style.border = '2px dashed #ccc';
             }}
           />
         ))}
@@ -180,7 +206,8 @@ function Dashboard() {
           onClick={() => openImageModal(images, 3)}
           title={`View all ${images.length} images`}
         >
-          +{images.length - 3}
+          <span>+{images.length - 3}</span>
+          <small>more</small>
         </div>
       </div>
     );
@@ -220,13 +247,15 @@ function Dashboard() {
           case 'Escape':
             closeImageModal();
             break;
+          default:
+            break;
         }
       }
     };
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImages]);
+  }, [selectedImages, currentImageIndex]);
 
   if (!user) return (
     <div className="dashboard-container">
@@ -290,84 +319,100 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {complaints.map((complaint) => (
-              <tr key={complaint._id}>
-                <td className="complaint-image-cell" data-label="Evidence">
-                  {renderImageGallery(complaint)}
-                </td>
-                <td data-label="Title">
-                  {complaint.priority && (
-                    <span className={`priority-indicator ${getPriorityClass(complaint.priority)}`}>
-                      {complaint.priority}
-                    </span>
-                  )}
-                  {complaint.title}
-                </td>
-                <td data-label="Description">{complaint.description}</td>
-                <td data-label="Category">{complaint.category}</td>
-                <td data-label="Status" data-status={complaint.status}>{complaint.status}</td>
-                <td data-label="Submitted By">{complaint.user?.name || user.name}</td>
-                <td data-label="Date & Time">{formatDate(complaint.createdAt)}</td>
-                {(user.role === "admin" || user.role === "authority") && (
-                  <td data-label="Actions">
-                    <select
-                      value={complaint.status}
-                      onChange={(e) => handleStatusChange(complaint._id, e.target.value)}
-                    >
-                      <option value="Pending">⏳ Pending</option>
-                      <option value="Under Review">👀 Under Review</option>
-                      <option value="Resolved">✅ Resolved</option>
-                    </select>
+            {complaints.map((complaint) => {
+              const imageCount = getComplaintImages(complaint).length;
+              return (
+                <tr key={complaint._id}>
+                  <td className="complaint-image-cell" data-label="Evidence">
+                    {renderImageGallery(complaint)}
+                    {imageCount > 1 && (
+                      <div className="image-count-badge">{imageCount} photos</div>
+                    )}
                   </td>
-                )}
-              </tr>
-            ))}
+                  <td data-label="Title">
+                    {complaint.priority && (
+                      <span className={`priority-indicator ${getPriorityClass(complaint.priority)}`}>
+                        {complaint.priority}
+                      </span>
+                    )}
+                    {complaint.title}
+                  </td>
+                  <td data-label="Description">{complaint.description}</td>
+                  <td data-label="Category">{complaint.category}</td>
+                  <td data-label="Status" data-status={complaint.status}>{complaint.status}</td>
+                  <td data-label="Submitted By">{complaint.user?.name || user.name}</td>
+                  <td data-label="Date & Time">{formatDate(complaint.createdAt)}</td>
+                  {(user.role === "admin" || user.role === "authority") && (
+                    <td data-label="Actions">
+                      <select
+                        value={complaint.status}
+                        onChange={(e) => handleStatusChange(complaint._id, e.target.value)}
+                      >
+                        <option value="Pending">⏳ Pending</option>
+                        <option value="Under Review">👀 Under Review</option>
+                        <option value="Resolved">✅ Resolved</option>
+                      </select>
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}
 
       {/* Enhanced Image Modal with Navigation */}
       {selectedImages && (
-        <div className={`image-modal ${selectedImages ? 'active' : ''}`} onClick={closeImageModal}>
-          <button className="image-modal-close" onClick={closeImageModal}>
+        <div 
+          className={`image-modal ${selectedImages ? 'active' : ''}`} 
+          onClick={closeImageModal}
+        >
+          <button 
+            className="image-modal-close" 
+            onClick={closeImageModal}
+            aria-label="Close modal"
+          >
             ×
           </button>
           
-          <img
-            src={selectedImages[currentImageIndex]}
-            alt={`Evidence ${currentImageIndex + 1} of ${selectedImages.length}`}
-            className="image-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          />
+          <div className="image-modal-wrapper" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={selectedImages[currentImageIndex]}
+              alt={`Evidence ${currentImageIndex + 1} of ${selectedImages.length}`}
+              className="image-modal-content"
+            />
+          </div>
           
           {selectedImages.length > 1 && (
             <>
-              <div className="image-modal-nav">
+              <div className="image-modal-nav" onClick={(e) => e.stopPropagation()}>
                 <button 
+                  className="nav-btn prev-btn"
                   onClick={prevImage}
-                  disabled={selectedImages.length <= 1}
+                  aria-label="Previous image"
                 >
                   ← Previous
                 </button>
                 <span className="image-modal-counter">
-                  {currentImageIndex + 1} of {selectedImages.length}
+                  {currentImageIndex + 1} / {selectedImages.length}
                 </span>
                 <button 
+                  className="nav-btn next-btn"
                   onClick={nextImage}
-                  disabled={selectedImages.length <= 1}
+                  aria-label="Next image"
                 >
                   Next →
                 </button>
               </div>
               
-              <div className="image-modal-thumbnails">
+              <div className="image-modal-thumbnails" onClick={(e) => e.stopPropagation()}>
                 {selectedImages.map((image, index) => (
                   <img
                     key={index}
                     src={image}
                     alt={`Thumbnail ${index + 1}`}
                     className={`image-modal-thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                    onClick={() => goToImage(index)}
+                    onClick={(e) => goToImage(index, e)}
                   />
                 ))}
               </div>

@@ -6,7 +6,7 @@ function ComplaintForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Harassment");
-  const [evidence, setEvidence] = useState([]); // ✅ multiple files
+  const [evidence, setEvidence] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
