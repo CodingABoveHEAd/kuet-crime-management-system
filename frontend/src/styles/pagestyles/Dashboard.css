@@ -377,7 +377,6 @@
   margin-top: 20px;
   padding: 15px 30px;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
   border-radius: 50px;
 }
 
@@ -421,7 +420,6 @@
   margin-top: 20px;
   padding: 15px;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
   border-radius: 20px;
   max-width: 90vw;
   overflow-x: auto;
