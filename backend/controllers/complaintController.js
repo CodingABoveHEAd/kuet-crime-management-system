@@ -42,7 +42,7 @@ export const createComplaint = async (req, res) => {
       await sendEmail(
         user.email,
         "Complaint Submitted Successfully",
-        `Hello ${user.name},\n\nYour complaint titled "${title}" has been submitted successfully. Our team will review it soon.\n\nThank you.`
+        `Hello ${user.name},\n\nYour complaint titled "${title}" has been submitted successfully.Our team will review it soon.\n\nThank you \nfrom KUET Crime Management Authority.`
       );
     }
 
