@@ -1,7 +1,7 @@
 import Complaint from "../models/Complaint.js";
 import cloudinary from "../config/cloudinary.js";
-import sendEmail from "../utils/sendEmail.js";
-import User from "../models/User.js"; // make sure User model exists
+import {sendEmail} from "../utils/sendEmail.js";
+import User from "../models/User.js";
 
 const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
@@ -35,6 +35,16 @@ export const createComplaint = async (req, res) => {
       category,
       evidence: evidenceUrls,
     });
+
+    // send email to user after complaint is created
+    const user = await User.findById(req.user._id);
+    if (user?.email) {
+      await sendEmail(
+        user.email,
+        "Complaint Submitted Successfully",
+        `Hello ${user.name},\n\nYour complaint titled "${title}" has been submitted successfully. Our team will review it soon.\n\nThank you.`
+      );
+    }
 
     res
       .status(201)

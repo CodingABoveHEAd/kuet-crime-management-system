@@ -1,26 +1,26 @@
 import nodemailer from "nodemailer";
 
-const sendEmail = async (to, subject, text) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail", // can also use "hotmail" or "yahoo"
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,   // your gmail
+    pass: process.env.EMAIL_PASS,   // your app password
+  },
+});
 
-    await transporter.sendMail({
-      from: `"Crime Management System" <${process.env.EMAIL_USER}>`,
+export const sendEmail = async (to, subject, text, html = null) => {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
       to,
       subject,
       text,
-    });
+      html,
+    };
 
-    console.log("✅ Email sent successfully to", to);
+    const info = await transporter.sendMail(mailOptions);
+   // console.log("✅ Email sent:", info.response);
   } catch (error) {
-    console.error("❌ Email send failed:", error);
+    console.error("❌ Email error:", error);
   }
 };
-
-export default sendEmail;
