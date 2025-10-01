@@ -1,6 +1,7 @@
 import Complaint from "../models/Complaint.js";
 import cloudinary from "../config/cloudinary.js";
-
+import sendEmail from "../utils/sendEmail.js";
+import User from "../models/User.js"; // make sure User model exists
 
 const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
@@ -43,8 +44,6 @@ export const createComplaint = async (req, res) => {
   }
 };
 
-
-
 // Get logged-in user's complaints
 export const getMyComplaints = async (req, res) => {
   try {
@@ -53,7 +52,6 @@ export const getMyComplaints = async (req, res) => {
     });
     res.json(complaints);
   } catch (error) {
-    // console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -66,31 +64,39 @@ export const getAllComplaints = async (req, res) => {
       .sort({ createdAt: -1 });
     res.json(complaints);
   } catch (error) {
-    //console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// Update complaint status
-// Update complaint status (admin only)
+// ✅ Update complaint status with email notification
 export const updateComplaintStatus = async (req, res) => {
   try {
     const { status } = req.body;
-
-    // Validate allowed status
     const allowedStatuses = ["Pending", "Under Review", "Resolved"];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
-    const complaint = await Complaint.findById(req.params.id);
+    const complaint = await Complaint.findById(req.params.id).populate(
+      "user",
+      "name email"
+    );
     if (!complaint)
       return res.status(404).json({ message: "Complaint not found" });
 
     complaint.status = status;
     await complaint.save();
 
-    res.json({ message: "Complaint status updated", complaint });
+    // send email notification
+    if (complaint.user?.email) {
+      await sendEmail(
+        complaint.user.email,
+        "Complaint Status Updated",
+        `Hello ${complaint.user.name},\n\nYour complaint titled "${complaint.title}" has been updated to: ${complaint.status}.\n\nThank you.`
+      );
+    }
+
+    res.json({ message: "Complaint status updated & email sent", complaint });
   } catch (error) {
     res.status(500).json({ message: "Server error, please try again later" });
   }
