@@ -24,6 +24,7 @@
   border-radius: 0 0 30px 30px;
 }
 
+/* Header Section */
 .dashboard-container h2 {
   color: white;
   font-size: 2.5rem;
@@ -35,7 +36,7 @@
 }
 
 .dashboard-container > p {
-  color: black;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
   margin-bottom: 3rem;
   position: relative;
@@ -961,4 +962,84 @@
   .complaints-table td {
     padding: 0.5rem 0 0.5rem 40%;
   }
+  
+  .complaints-table td:before {
+    width: 38%;
+    font-size: 0.85rem;
+    top: 0.5rem;
+  }
+  
+  .complaint-image-cell {
+    padding: 0.5rem 0 0.5rem 40% !important;
+  }
+  
+  .complaint-images-gallery.single .complaint-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .complaint-images-gallery.grid-2,
+  .complaint-images-gallery.grid-3,
+  .complaint-images-gallery.grid-more {
+    max-width: 200px;
+  }
+  
+  .complaint-images-gallery.grid-2 .complaint-image,
+  .complaint-images-gallery.grid-3 .complaint-image,
+  .complaint-images-gallery.grid-more .complaint-image {
+    height: 60px;
+  }
+  
+  .complaint-images-gallery.grid-more .images-counter {
+    height: 60px;
+  }
+  
+  .no-image-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .image-modal-content {
+    max-height: 60vh;
+  }
+  
+  .nav-btn {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Loading Animation */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.dashboard-container > p:only-child {
+  animation: pulse 2s infinite;
+}
+
+/* Smooth scrolling for thumbnails */
+.image-modal-thumbnails {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(76, 175, 80, 0.5) transparent;
+}
+
+.image-modal-thumbnails::-webkit-scrollbar {
+  height: 6px;
+}
+
+.image-modal-thumbnails::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.image-modal-thumbnails::-webkit-scrollbar-thumb {
+  background: rgba(76, 175, 80, 0.5);
+  border-radius: 10px;
+}
+
+.image-modal-thumbnails::-webkit-scrollbar-thumb:hover {
+  background: rgba(76, 175, 80, 0.7);
 }
