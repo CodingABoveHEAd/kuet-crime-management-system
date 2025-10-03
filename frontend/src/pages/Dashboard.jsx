@@ -3,6 +3,8 @@ import axios from "axios";
 import AuthContext from "../context/AuthContext";
 import "../styles/pagestyles/Dashboard.css";
 
+// Add this CSS directly in your Dashboard.css file
+
 function Dashboard() {
   const { token, user } = useContext(AuthContext);
   const [complaints, setComplaints] = useState([]);
@@ -10,6 +12,11 @@ function Dashboard() {
   const [error, setError] = useState("");
   const [selectedImages, setSelectedImages] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Filter & Sort states
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSort, setSelectedSort] = useState("newest");
+  
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -17,34 +24,54 @@ function Dashboard() {
     resolved: 0
   });
 
+  // Categories for filter dropdown
+  const categories = [
+    "Theft",
+    "Vandalism",
+    "Fraud",
+    "Assault",
+    "Burglary",
+    "Cybercrime",
+    "Drug-related",
+    "Traffic Violation",
+    "Harassment",
+    "Other"
+  ];
+
   useEffect(() => {
-    const fetchComplaints = async () => {
-      if (!user) return;
-
-      try {
-        const endpoint =
-          user.role === "admin" || user.role === "authority"
-            ? "/api/complaints/all"
-            : "/api/complaints/my";
-
-        const res = await axios.get(endpoint, {
-          headers: {
-            Authorization: `Bearer ${token || localStorage.getItem("token")}`,
-          },
-        });
-
-        setComplaints(res.data);
-        calculateStats(res.data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setError(err.response?.data?.message || "Failed to fetch complaints");
-        setLoading(false);
-      }
-    };
-
     fetchComplaints();
-  }, [token, user]);
+  }, [token, user, selectedCategory, selectedSort]);
+
+  const fetchComplaints = async () => {
+    if (!user) return;
+
+    try {
+      const endpoint =
+        user.role === "admin" || user.role === "authority"
+          ? "/api/complaints/all"
+          : "/api/complaints/my";
+
+      // Build query params
+      const params = {};
+      if (selectedCategory) params.category = selectedCategory;
+      if (selectedSort) params.sortBy = selectedSort;
+
+      const res = await axios.get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${token || localStorage.getItem("token")}`,
+        },
+        params: params
+      });
+
+      setComplaints(res.data);
+      calculateStats(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Failed to fetch complaints");
+      setLoading(false);
+    }
+  };
 
   const calculateStats = (complaintsData) => {
     const total = complaintsData.length;
@@ -77,16 +104,30 @@ function Dashboard() {
     }
   };
 
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    setLoading(true);
+  };
+
+  const handleSortChange = (e) => {
+    setSelectedSort(e.target.value);
+    setLoading(true);
+  };
+
+  const clearFilters = () => {
+    setSelectedCategory("");
+    setSelectedSort("newest");
+    setLoading(true);
+  };
+
   // Handle multiple images - enhanced logic
   const getComplaintImages = (complaint) => {
     const images = [];
     
-    // Check for evidence array (your model's field name)
     if (complaint.evidence && Array.isArray(complaint.evidence) && complaint.evidence.length > 0) {
       images.push(...complaint.evidence);
     }
     
-    // Backward compatibility: Check for images array
     if (complaint.images && Array.isArray(complaint.images) && complaint.images.length > 0) {
       complaint.images.forEach(img => {
         if (!images.includes(img)) {
@@ -95,14 +136,12 @@ function Dashboard() {
       });
     }
     
-    // Backward compatibility: Check for single image field
     if (complaint.image && typeof complaint.image === 'string' && complaint.image.trim() !== '') {
       if (!images.includes(complaint.image)) {
         images.push(complaint.image);
       }
     }
     
-    // Filter out any invalid URLs or empty strings
     return images.filter(img => img && typeof img === 'string' && img.trim() !== '' && img.startsWith('http'));
   };
 
@@ -185,7 +224,6 @@ function Dashboard() {
       );
     }
 
-    // For 4+ images, show first 3 + counter
     return (
       <div className="complaint-images-gallery grid-more">
         {images.slice(0, 3).map((image, index) => (
@@ -233,7 +271,6 @@ function Dashboard() {
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
-  // Keyboard navigation for modal
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (selectedImages) {
@@ -302,8 +339,59 @@ function Dashboard() {
         </div>
       </div>
 
+      {/* Filter & Sort Controls - Only for Admin/Authority */}
+      {(user.role === "admin" || user.role === "authority") && (
+        <div className="filter-sort-controls">
+          <div className="filter-group">
+            <label htmlFor="category-filter">
+              <span className="filter-icon">🏷️</span>
+              Filter by Category:
+            </label>
+            <select 
+              id="category-filter"
+              value={selectedCategory} 
+              onChange={handleCategoryChange}
+              className="filter-select"
+            >
+              <option value="">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label htmlFor="sort-select">
+              <span className="filter-icon">🔄</span>
+              Sort by:
+            </label>
+            <select 
+              id="sort-select"
+              value={selectedSort} 
+              onChange={handleSortChange}
+              className="filter-select"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="status">Status</option>
+              <option value="title">Title (A-Z)</option>
+            </select>
+          </div>
+
+          {(selectedCategory || selectedSort !== "newest") && (
+            <button 
+              className="clear-filters-btn" 
+              onClick={clearFilters}
+              title="Clear all filters"
+            >
+              ✖ Clear Filters
+            </button>
+          )}
+        </div>
+      )}
+
       {complaints.length === 0 ? (
-        <p>📝 No complaints found. Your dashboard is clean!</p>
+        <p>📝 No complaints found. {selectedCategory && "Try changing your filter settings."}</p>
       ) : (
         <table className="complaints-table">
           <thead>
