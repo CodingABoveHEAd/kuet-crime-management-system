@@ -42,7 +42,7 @@ export const createComplaint = async (req, res) => {
       await sendEmail(
         user.email,
         "Complaint Submitted Successfully",
-        `Hello ${user.name},\n\nYour complaint titled "${title}" has been submitted successfully. Our team will review it soon.\n\nThank you.`
+        `Hello ${user.name},\n\nYour complaint titled "${title}" has been submitted successfully.Our team will review it soon.\n\nThank you \nfrom KUET Crime Management Authority.`
       );
     }
 
@@ -66,17 +66,47 @@ export const getMyComplaints = async (req, res) => {
   }
 };
 
-// Get all complaints (admin/authority)
+// Get all complaints (admin/authority) with filter & sort
 export const getAllComplaints = async (req, res) => {
   try {
-    const complaints = await Complaint.find()
-      .populate("user", "name email")
-      .sort({ createdAt: -1 });
+    const { category, sortBy } = req.query;
+
+    let filter = {};
+    if (category) {
+      filter.category = category; // filter complaints by category
+    }
+
+    let query = Complaint.find(filter).populate("user", "name email");
+
+    // Sorting
+    if (sortBy) {
+      switch (sortBy) {
+        case "newest":
+          query = query.sort({ createdAt: -1 });
+          break;
+        case "oldest":
+          query = query.sort({ createdAt: 1 });
+          break;
+        case "status":
+          query = query.sort({ status: 1 }); // alphabetical by status
+          break;
+        case "title":
+          query = query.sort({ title: 1 }); // A-Z by title
+          break;
+        default:
+          query = query.sort({ createdAt: -1 }); // default newest first
+      }
+    } else {
+      query = query.sort({ createdAt: -1 }); // default newest first
+    }
+
+    const complaints = await query.exec();
     res.json(complaints);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // ✅ Update complaint status with email notification
 export const updateComplaintStatus = async (req, res) => {
