@@ -17,7 +17,6 @@ const uploadToCloudinary = (fileBuffer) => {
 };
 
 // Create complaint with multiple images
-// Create complaint with multiple images
 export const createComplaint = async (req, res) => {
   try {
     const { title, description, category } = req.body;
@@ -123,7 +122,7 @@ export const getAllComplaints = async (req, res) => {
   }
 };
 
-// ✅ Update complaint status with email notification
+// Update complaint status with email notification
 export const updateComplaintStatus = async (req, res) => {
   try {
     const { status } = req.body;
