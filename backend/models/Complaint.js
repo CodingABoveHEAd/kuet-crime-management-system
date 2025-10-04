@@ -8,6 +8,10 @@ const complaintSchema = new mongoose.Schema(
     category: { type: String, default: "Other" },
     status: { type: String, enum: ["Pending", "Under Review", "Resolved"], default: "Pending" },
     evidence: [{ type: String }], // URL or path to uploaded file
+    location: {
+      latitude: { type: Number, required: true },
+      longitude: { type: Number, required: true },
+    },
   },
   { timestamps: true }
 );
