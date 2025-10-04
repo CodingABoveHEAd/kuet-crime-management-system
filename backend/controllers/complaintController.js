@@ -1,6 +1,6 @@
 import Complaint from "../models/Complaint.js";
 import cloudinary from "../config/cloudinary.js";
-import {sendEmail} from "../utils/sendEmail.js";
+import { sendEmail } from "../utils/sendEmail.js";
 import User from "../models/User.js";
 
 const uploadToCloudinary = (fileBuffer) => {
@@ -20,8 +20,19 @@ const uploadToCloudinary = (fileBuffer) => {
 export const createComplaint = async (req, res) => {
   try {
     const { title, description, category } = req.body;
-    let evidenceUrls = [];
+    
+    // Parse latitude and longitude from string to number
+    const latitude = parseFloat(req.body.latitude);
+    const longitude = parseFloat(req.body.longitude);
 
+    // Validate coordinates
+    if (isNaN(latitude) || isNaN(longitude)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or missing location coordinates" });
+    }
+
+    let evidenceUrls = [];
     if (req.files && req.files.length > 0) {
       evidenceUrls = await Promise.all(
         req.files.map((file) => uploadToCloudinary(file.buffer))
@@ -34,15 +45,18 @@ export const createComplaint = async (req, res) => {
       description,
       category,
       evidence: evidenceUrls,
+      location: {
+        latitude: latitude,  // Already parsed above
+        longitude: longitude, // Already parsed above
+      },
     });
 
-    // send email to user after complaint is created
     const user = await User.findById(req.user._id);
     if (user?.email) {
       await sendEmail(
         user.email,
         "Complaint Submitted Successfully",
-        `Hello ${user.name},\n\nYour complaint titled "${title}" has been submitted successfully.Our team will review it soon.\n\nThank you \nfrom KUET Crime Management Authority.`
+        `Hello ${user.name},\n\nYour complaint titled "${title}" has been submitted successfully. Our team will review it soon.\n\nThank you \nfrom KUET Crime Management Authority.`
       );
     }
 
@@ -50,6 +64,7 @@ export const createComplaint = async (req, res) => {
       .status(201)
       .json({ message: "Complaint submitted successfully", complaint });
   } catch (error) {
+    console.log("Error creating complaint:", error); // Add logging
     res.status(500).json({ message: error.message });
   }
 };
@@ -107,8 +122,7 @@ export const getAllComplaints = async (req, res) => {
   }
 };
 
-
-// ✅ Update complaint status with email notification
+// Update complaint status with email notification
 export const updateComplaintStatus = async (req, res) => {
   try {
     const { status } = req.body;
