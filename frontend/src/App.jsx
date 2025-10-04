@@ -21,7 +21,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/complaint" element={<ComplaintForm />} />
         <Route path="/analytics" element={<AdminDashboard />} />
-        <Route path="/admin/map" element={<AdminMap />} /> 
+        <Route path="/map" element={<AdminMap />} /> 
       </Routes>
     </div>
   );

@@ -66,7 +66,7 @@ export default function Navbar() {
             <span className="nav-icon">🚨</span>
             File Complaint
           </Link>
-          <Link to="/admin/map" className="nav-link">
+          <Link to="/map" className="nav-link">
             <span className="nav-icon">📍</span>
             Map View
           </Link>
@@ -116,7 +116,7 @@ export default function Navbar() {
             Dashboard
           </Link>
 
-          <Link to="/admin/map" className="mobile-link" onClick={toggleMenu}>
+          <Link to="/map" className="mobile-link" onClick={toggleMenu}>
             <span className="nav-icon">📍</span>
             Map View
           </Link>

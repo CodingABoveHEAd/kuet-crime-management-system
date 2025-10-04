@@ -17,14 +17,16 @@ const uploadToCloudinary = (fileBuffer) => {
 };
 
 // Create complaint with multiple images
+// Create complaint with multiple images
 export const createComplaint = async (req, res) => {
   try {
-    const { title, description, category,latitude,longitude } = req.body;
-    //console.log("Received lat/lng:", latitude, longitude, typeof latitude, typeof longitude);
+    const { title, description, category } = req.body;
+    
+    // Parse latitude and longitude from string to number
+    const latitude = parseFloat(req.body.latitude);
+    const longitude = parseFloat(req.body.longitude);
 
-  //  const latitude = parseFloat(req.body.latitude);
-    //const longitude = parseFloat(req.body.longitude);
-
+    // Validate coordinates
     if (isNaN(latitude) || isNaN(longitude)) {
       return res
         .status(400)
@@ -38,17 +40,17 @@ export const createComplaint = async (req, res) => {
       );
     }
 
-const complaint = await Complaint.create({
-  user: req.user._id,
-  title,
-  description,
-  category,
-  evidence: evidenceUrls,
-  location: {
-    latitude: parseFloat(latitude),
-    longitude: parseFloat(longitude),
-  },
-});
+    const complaint = await Complaint.create({
+      user: req.user._id,
+      title,
+      description,
+      category,
+      evidence: evidenceUrls,
+      location: {
+        latitude: latitude,  // Already parsed above
+        longitude: longitude, // Already parsed above
+      },
+    });
 
     const user = await User.findById(req.user._id);
     if (user?.email) {
@@ -63,6 +65,7 @@ const complaint = await Complaint.create({
       .status(201)
       .json({ message: "Complaint submitted successfully", complaint });
   } catch (error) {
+    console.log("Error creating complaint:", error); // Add logging
     res.status(500).json({ message: error.message });
   }
 };
