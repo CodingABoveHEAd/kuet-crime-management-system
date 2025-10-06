@@ -152,7 +152,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
@@ -180,7 +180,7 @@ function Home() {
             <p>&copy; 2025 KUET Crime Management System. All rights reserved.</p>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }

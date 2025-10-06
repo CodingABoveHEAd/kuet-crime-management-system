@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
+   background: linear-gradient(135deg,#98e7bc  0%, #f8fafc 100%);
   /* backdrop-filter: blur(10px); */
   border-bottom: 1px solid rgba(46, 125, 50, 0.1);
   transition: all 0.3s ease;
