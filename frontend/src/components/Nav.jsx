@@ -1,17 +1,54 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/componentstyles/Navbar.css";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null); // 'admin' or 'user'
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
-  // Check login state on load
+  // Check login and role on load
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setIsLoggedIn(true);
+        setUserRole(decoded.role || "user");
+        
+        // Fetch unread messages for admin
+        if (decoded.role === "admin" || decoded.role === "authority") {
+          fetchUnreadMessages();
+        }
+      } catch (err) {
+        console.error("Invalid token:", err);
+        setIsLoggedIn(false);
+        setUserRole(null);
+      }
+    } else {
+      setIsLoggedIn(false);
+      setUserRole(null);
+    }
   }, []);
+
+  // Fetch unread messages count
+  const fetchUnreadMessages = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("/api/contact/all", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Assuming messages that are not read have a 'read' field or you can count total
+      // Adjust based on your backend implementation
+      setUnreadCount(res.data.length || 0);
+    } catch (error) {
+      console.error("Failed to fetch unread messages:", error);
+    }
+  };
 
   // Toggle mobile menu
   const toggleMenu = () => {
@@ -21,17 +58,13 @@ export default function Navbar() {
   // Logout handler
   const handleLogout = async () => {
     try {
-      // (Optional) Call backend logout API
       await fetch("/api/auth/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
-
-      // Remove token from localStorage
       localStorage.removeItem("token");
       setIsLoggedIn(false);
-
-      // Redirect to home page
+      setUserRole(null);
       navigate("/");
     } catch (error) {
       console.error("Logout failed", error);
@@ -41,7 +74,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-container">
-        {/* Logo/Brand */}
+        {/* Logo */}
         <div className="nav-brand">
           <Link to="/" className="brand-link">
             <span className="brand-icon">🛡️</span>
@@ -52,27 +85,42 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation */}
         <div className="nav-links">
           <Link to="/" className="nav-link">
-            <span className="nav-icon">🏠</span>
-            Home
+            <span className="nav-icon">🏠</span> Home
           </Link>
+
           <Link to="/dashboard" className="nav-link">
-            <span className="nav-icon">📊</span>
-            Dashboard
+            <span className="nav-icon">📊</span> Dashboard
           </Link>
+
           <Link to="/complaint" className="nav-link complaint-btn">
-            <span className="nav-icon">🚨</span>
-            File Complaint
+            <span className="nav-icon">🚨</span> File Complaint
           </Link>
+
           <Link to="/map" className="nav-link">
-            <span className="nav-icon">📍</span>
-            Map View
+            <span className="nav-icon">📍</span> Map View
           </Link>
+
+          {(userRole !== "admin" && userRole !== "authority") && (
+            <Link to="/Contact" className="nav-link">
+              <span className="nav-icon">✉️</span> Contact Us
+            </Link>
+          )}
+
+          {/* Show Messages only for admin with badge */}
+          {(userRole === "admin" || userRole === "authority") && (
+            <Link to="/admin/messages" className="nav-link nav-messages">
+              <span className="nav-icon">📩</span> Messages
+              {unreadCount > 0 && (
+                <span className="message-badge">{unreadCount}</span>
+              )}
+            </Link>
+          )}
         </div>
 
-        {/* Authentication Links */}
+        {/* Auth Buttons */}
         <div className="nav-auth">
           {!isLoggedIn ? (
             <>
@@ -91,11 +139,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          className="mobile-menu-btn"
-          onClick={toggleMenu}
-          aria-label="Toggle mobile menu"
-        >
+        <button className="mobile-menu-btn" onClick={toggleMenu}>
           <span className={`hamburger ${isMenuOpen ? "active" : ""}`}>
             <span></span>
             <span></span>
@@ -108,27 +152,46 @@ export default function Navbar() {
       <div className={`mobile-menu ${isMenuOpen ? "active" : ""}`}>
         <div className="mobile-links">
           <Link to="/" className="mobile-link" onClick={toggleMenu}>
-            <span className="nav-icon">🏠</span>
-            Home
+            🏠 Home
           </Link>
           <Link to="/dashboard" className="mobile-link" onClick={toggleMenu}>
-            <span className="nav-icon">📊</span>
-            Dashboard
+            📊 Dashboard
           </Link>
-
           <Link to="/map" className="mobile-link" onClick={toggleMenu}>
-            <span className="nav-icon">📍</span>
-            Map View
+            📍 Map View
           </Link>
-
           <Link
             to="/complaint"
             className="mobile-link complaint-mobile"
             onClick={toggleMenu}
           >
-            <span className="nav-icon">🚨</span>
-            File Complaint
+            🚨 File Complaint
           </Link>
+
+          {/* Contact for user */}
+          {(userRole !== "admin" && userRole !== "authority") && (
+            <Link
+              to="/contact"
+              className="mobile-link"
+              onClick={toggleMenu}
+            >
+              ✉️ Contact Us
+            </Link>
+          )}
+
+          {/* Messages for admin with badge */}
+          {(userRole === "admin" || userRole === "authority") && (
+            <Link
+              to="/admin/messages"
+              className="mobile-link mobile-messages"
+              onClick={toggleMenu}
+            >
+              <span className="mobile-icon">📩 Messages</span>
+              {unreadCount > 0 && (
+                <span className="message-badge-mobile">{unreadCount}</span>
+              )}
+            </Link>
+          )}
 
           <div className="mobile-auth">
             {!isLoggedIn ? (

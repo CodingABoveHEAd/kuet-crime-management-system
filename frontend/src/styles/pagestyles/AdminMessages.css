@@ -1,28 +1,387 @@
+/* AdminMessages.css - Modern Admin Messages Panel matching Contact.css theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Main Container */
 .admin-messages {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9f0 0%, #e8f5e8 100%);
+  padding: 80px 20px 120px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Decorative background elements */
+.admin-messages::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(76, 175, 80, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(118, 75, 162, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Page Title */
+.admin-messages h2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #4caf50;
+  text-align: center;
+  margin-bottom: 50px;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Empty State Message */
+.admin-messages > p {
+  font-size: 1.2rem;
+  color: rgb(43, 41, 41);
+  text-align: center;
+  padding: 80px 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px dashed #e2e8f0;
+  border-radius: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.6s ease-out 0.1s both;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Messages List Container */
 .message-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 28px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.6s ease-out 0.2s both;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Message Card */
 .message-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.08),
+    0 0 1px rgba(255, 255, 255, 0.5) inset;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Card Hover Effect */
+.message-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.12),
+    0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+/* Card Gradient Top Border on Hover */
+.message-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4caf50 0%, #66bb6a 50%, #4caf50 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: left;
+}
+
+.message-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Message Username */
 .message-card h4 {
-  margin-bottom: 8px;
-  color: #0056b3;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #4caf50;
+  margin: 0 0 20px 0;
+  line-height: 1.3;
+  word-break: break-word;
+  letter-spacing: -0.02em;
 }
 
-.message-card small {
-  color: #666;
-  font-size: 13px;
+/* Message Paragraphs */
+.message-card p {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.7;
+  margin: 0 0 16px 0;
+  font-weight: 500;
 }
+
+/* Email Information */
+.message-card p strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Message Content */
+.message-card p:nth-of-type(2) {
+  background: #f8fafc;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border-left: 4px solid #4caf50;
+  font-weight: 400;
+  margin-top: 18px;
+  color: #334155;
+  line-height: 1.8;
+}
+
+/* Timestamp */
+.message-card small {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 500;
+  display: block;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid #e2e8f0;
+}
+
+/* Animation for card appearance */
+.message-card {
+  animation: cardSlideIn 0.5s ease-out backwards;
+}
+
+.message-card:nth-child(1) { animation-delay: 0.2s; }
+.message-card:nth-child(2) { animation-delay: 0.25s; }
+.message-card:nth-child(3) { animation-delay: 0.3s; }
+.message-card:nth-child(4) { animation-delay: 0.35s; }
+.message-card:nth-child(5) { animation-delay: 0.4s; }
+.message-card:nth-child(6) { animation-delay: 0.45s; }
+.message-card:nth-child(n+7) { animation-delay: 0.5s; }
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .admin-messages {
+    padding: 70px 20px 100px;
+  }
+
+  .admin-messages h2 {
+    font-size: 2.5rem;
+    margin-bottom: 45px;
+  }
+
+  .message-list {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+  }
+
+  .message-card {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-messages {
+    padding: 60px 15px 100px;
+  }
+
+  .admin-messages h2 {
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+  }
+
+  .message-list {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .message-card {
+    padding: 24px;
+  }
+
+  .message-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+
+  .message-card p {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .message-card p:nth-of-type(2) {
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+
+  .message-card small {
+    font-size: 12px;
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+
+  .admin-messages > p {
+    font-size: 1rem;
+    padding: 60px 24px;
+    margin: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-messages {
+    padding: 40px 12px 80px;
+  }
+
+  .admin-messages h2 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+
+  .message-list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .message-card {
+    padding: 20px;
+  }
+
+  .message-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  .message-card p {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .message-card p:nth-of-type(2) {
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+
+  .message-card small {
+    font-size: 11px;
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .admin-messages > p {
+    font-size: 0.95rem;
+    padding: 40px 16px;
+    margin: 0 12px;
+    border-radius: 16px;
+  }
+}
+
+/* Accessibility */
+.message-card:focus-within {
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.12),
+    0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.message-card a:focus {
+  outline: 2px solid #4caf50;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Dark mode support (if needed in future) */
+/* @media (prefers-color-scheme: dark) {
+  .admin-messages {
+     background: linear-gradient(135deg, #f0f9f0 0%, #e8f5e8 100%);
+  }
+
+  .message-card {
+    background: white;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .message-card h4 {
+    color: #66bb6a;
+  }
+
+  .message-card p {
+    color: #cbd5e1;
+  }
+
+  .message-card p strong {
+    color: #f1f5f9;
+  }
+
+  .message-card p:nth-of-type(2) {
+    background: rgba(15, 23, 42, 0.5);
+    color: #e2e8f0;
+    border-left-color: #4caf50;
+  }
+
+  .message-card small {
+    color: #94a3b8;
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .admin-messages > p {
+    background: rgba(45, 45, 45, 0.95);
+    color: #cbd5e1;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+} */

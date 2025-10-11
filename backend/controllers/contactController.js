@@ -1,4 +1,4 @@
-import Contact from "../models/contactModel.js";
+import Contact from "../models/Contact.js";
 
 // POST /api/contact
 export const createMessage = async (req, res) => {
