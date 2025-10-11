@@ -103,6 +103,10 @@ export default function Navbar() {
             <span className="nav-icon">📍</span> Map View
           </Link>
 
+          <Link to="/map" className="nav-link">
+            <span className="nav-icon">📍</span> Map View
+          </Link>
+
           {(userRole !== "admin" && userRole !== "authority") && (
             <Link to="/Contact" className="nav-link">
               <span className="nav-icon">✉️</span> Contact Us
