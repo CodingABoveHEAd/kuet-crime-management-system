@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ComplaintForm from "./pages/ComplaintForm";
 import Navbar from "./components/Nav";
-import Footer from "./components/Footer"; // ✅ new footer
+import Footer from "./components/Footer";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMap from "./pages/AdminMap";
 import Contact from "./pages/Contact";
