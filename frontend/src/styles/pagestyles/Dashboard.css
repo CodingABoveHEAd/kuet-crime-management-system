@@ -8,6 +8,7 @@
   position: relative;
   overflow-x: hidden;
   margin: 50px auto;
+  margin-top: 0px;
 }
 
 /* Background decoration */
@@ -928,7 +929,7 @@
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 0.5rem;
-    margin-top: 60px;
+    /* margin-top: 60px; */
   }
   
   .dashboard-container h2 {
