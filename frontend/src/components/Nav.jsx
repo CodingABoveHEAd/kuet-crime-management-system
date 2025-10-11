@@ -88,35 +88,35 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="nav-links">
           <Link to="/" className="nav-link">
-            <span className="nav-icon">🏠</span> Home
+            <span className="nav-icon">🏠</span>Home
           </Link>
 
           <Link to="/dashboard" className="nav-link">
-            <span className="nav-icon">📊</span> Dashboard
+            <span className="nav-icon">📊</span>Dashboard
           </Link>
 
           <Link to="/complaint" className="nav-link complaint-btn">
-            <span className="nav-icon">🚨</span> File Complaint
+            <span className="nav-icon">🚨</span>File Complaint
           </Link>
 
           <Link to="/map" className="nav-link">
-            <span className="nav-icon">📍</span> Map View
+            <span className="nav-icon">📍</span>Map View
           </Link>
 
-          <Link to="/map" className="nav-link">
-            <span className="nav-icon">📍</span> Map View
+          <Link to="/about" className="nav-link">
+            <span className="nav-icon">📍</span>About Us
           </Link>
 
           {(userRole !== "admin" && userRole !== "authority") && (
             <Link to="/Contact" className="nav-link">
-              <span className="nav-icon">✉️</span> Contact Us
+              <span className="nav-icon">✉️</span>Contact Us
             </Link>
           )}
 
           {/* Show Messages only for admin with badge */}
           {(userRole === "admin" || userRole === "authority") && (
             <Link to="/admin/messages" className="nav-link nav-messages">
-              <span className="nav-icon">📩</span> Messages
+              <span className="nav-icon">📩</span>Messages
               {unreadCount > 0 && (
                 <span className="message-badge">{unreadCount}</span>
               )}

@@ -10,6 +10,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminMap from "./pages/AdminMap";
 import Contact from "./pages/Contact";
 import AdminMessages from "./pages/AdminMessages";
+import About from "./pages/About";
+
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
           <Route path="/complaint" element={<ComplaintForm />} />
           <Route path="/analytics" element={<AdminDashboard />} />
           <Route path="/map" element={<AdminMap />} />
+          <Route path="/about" element={<About />} />
 
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/messages" element={<AdminMessages />} />
