@@ -53,6 +53,57 @@ const About = () => {
           </p>
         </section>
 
+        {/* 🖼️ Gallery Section */}
+        <section className="about-section about-gallery">
+          <h2>Gallery</h2>
+          <p className="gallery-intro">
+            A glimpse into the development and inspiration behind KUET CMS.
+          </p>
+          <div className="gallery-grid">
+            <img
+              src="/images/image1.jpg"
+              alt="Campus safety meeting"
+              className="gallery-img"
+            />
+            <img
+              src="/images/image2.jpg"
+              alt="KUET main gate"
+              className="gallery-img"
+            />
+            <img
+              src="/images/image3.jpg"
+              alt="Developers at work"
+              className="gallery-img"
+            />
+            
+            <img
+              src="/images/image4.jpg"
+              alt="Tech innovation session"
+              className="gallery-img"
+            />
+            {/* <img
+              src="/images/image5.jpg"
+              alt="Tech innovation session"
+              className="gallery-img"
+            /> */}
+            <img
+              src="/images/image6.jpg"
+              alt="Tech innovation session"
+              className="gallery-img"
+            />
+            <img
+              src="/images/image7.jpg"
+              alt="Tech innovation session"
+              className="gallery-img"
+            />
+            <img
+              src="/images/image8.jpg"
+              alt="Tech innovation session"
+              className="gallery-img"
+            />
+          </div>
+        </section>
+
         <section className="about-section about-team">
           <h2>Developed By</h2>
           <p>
