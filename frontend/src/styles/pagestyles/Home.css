@@ -87,7 +87,7 @@
 }
 
 span{
-  color: white;
+  color: white !important;
 }
 
 .hero-content {
@@ -114,11 +114,7 @@ span{
   margin-bottom: 1.5rem;
 }
 
-.kuet-text {
-  color: #4caf50;
-  display: block;
-  font-size: 2rem;
-}
+
 
 .main-text {
   background: linear-gradient(135deg, #ffffff, #e8f5e8);
@@ -187,7 +183,7 @@ span{
   border-radius: 16px;
   padding: 1.5rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 520px;
   animation: slideInRight 1s ease-out;
 }
 
@@ -473,4 +469,17 @@ span{
   .emergency-actions {
     flex-direction: column;
   }
+}
+
+.kuet-text {
+  color: #4caf50 !important;
+  display: block;
+  font-size: 2rem;
+}
+
+.kuet-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #2e7d32 !important;
+    letter-spacing: -0.5px;
 }

@@ -27,7 +27,7 @@ body {
   position: relative;
   z-index: 1;
   margin: auto;
-  margin-top:200px;
+  margin:50px auto;
 }
 
 .login-container h2 {

@@ -296,7 +296,7 @@ function Dashboard() {
 
   if (!user) return (
     <div className="dashboard-container">
-      <p>🔐 Loading user information...</p>
+      <p>🔐Please Login or Register first</p>
     </div>
   );
 
