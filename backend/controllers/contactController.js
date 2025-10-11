@@ -28,3 +28,17 @@ export const getAllMessages = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// DELETE /api/contact/:id (Mark as read and delete)
+// Delete message by ID
+export const deleteMessage = async (req, res) => {
+  try {
+    const message = await Contact.findByIdAndDelete(req.params.id);
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+    res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete message" });
+  }
+};
