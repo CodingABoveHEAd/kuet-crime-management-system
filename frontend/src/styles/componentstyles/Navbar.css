@@ -120,7 +120,7 @@
   top: -8px;
   right: -8px;
   background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
-  color: white;
+  color: white !important;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -146,12 +146,7 @@
 }
 
 /* Special styling for complaint button */
-.complaint-btn {
-  background: linear-gradient(135deg, #ff5722, #e64a19);
-  color: white !important;
-  font-weight: 600;
-  box-shadow: 0 2px 10px rgba(255, 87, 34, 0.3);
-}
+
 
 .complaint-btn:hover {
   background: linear-gradient(135deg, #e64a19, #d84315);
@@ -312,7 +307,7 @@
 
 .message-badge-mobile {
   background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
-  color: white;
+  
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -323,6 +318,7 @@
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(255, 87, 34, 0.4);
   animation: badgePulse 2s ease-in-out infinite;
+  color: white !important;
 }
 
 .complaint-mobile {
@@ -449,4 +445,15 @@
 
 .logout-btn:hover {
   background: #d9363e;
+}
+
+span{
+  color:black !important;
+}
+
+.complaint-btn {
+  background: linear-gradient(135deg, #ff5722, #e64a19);
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(255, 87, 34, 0.3);
 }

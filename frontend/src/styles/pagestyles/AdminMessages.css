@@ -427,3 +427,7 @@
 button{
     background-color: #dd0707;
 }
+
+.btn-text , .btn-icon{
+  color : white !important;
+}

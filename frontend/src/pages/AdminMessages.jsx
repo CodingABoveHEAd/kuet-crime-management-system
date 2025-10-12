@@ -99,10 +99,7 @@ function AdminMessages() {
                   {deleting === msg._id ? (
                     <span className="btn-spinner"></span>
                   ) : (
-                    <>
-                      <span className="btn-icon">✓</span>
-                      <span className="btn-text">Mark as Read & Delete</span>
-                    </>
+                      <span className="btn-text">✓ Mark as Read & Delete</span>
                   )}
                 </button>
               </div>
