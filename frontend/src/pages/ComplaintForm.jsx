@@ -208,7 +208,7 @@ function ComplaintForm() {
                 />
               </div>
               <p className="map-instruction">
-                💡 Click on the map to mark the location where the incident occurred
+                 Click on the map to mark the location where the incident occurred
               </p>
               {latitude && longitude && (
                 <div className="location-info">
@@ -242,7 +242,7 @@ function ComplaintForm() {
                   <span>
                     {files.length > 0
                       ? `${files.length} file(s) selected`
-                      : "Click to upload photos, videos, or documents"}
+                      : "Click to upload photos or documents"}
                   </span>
                 </label>
               </div>
