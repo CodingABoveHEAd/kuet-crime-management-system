@@ -269,6 +269,86 @@
   opacity: 0.7;
 }
 
+/* Header Specific Styles */
+.analytics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-refresh,
+.btn-retry {
+  background: #0ea5e9;
+  color: #fff;
+}
+
+.last-updated {
+  font-size: 12px;
+  color: #475569;
+}
+
+/* Chart Card Header */
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.range-controls {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.range-btn {
+  background: #e2f5e7;
+  color: #2e7d32;
+  border: 1px solid #b7e0c0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.range-btn.active {
+  background: #2e7d32;
+  color: #fff;
+  border-color: #2e7d32;
+}
+
+/* Empty Chart State */
+.empty-chart {
+  display: grid;
+  place-items: center;
+  height: 220px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Ensure chart wrappers don’t overflow horizontally */
+.chart-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
 /* Responsive Grid Adjustments */
 @media (min-width: 1400px) {
   .charts-grid {

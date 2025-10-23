@@ -377,9 +377,9 @@
 }
 
 .alert-message.success {
-  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
 .alert-message.error {
@@ -390,6 +390,38 @@
 
 .alert-icon {
   font-size: 1.25rem;
+}
+
+/* Success toast */
+.toast-container {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+  max-width: 420px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  background: #fff;
+  border-left: 6px solid transparent;
+  font-weight: 600;
+}
+
+.toast-success {
+  border-left-color: #22c55e;
+  color: #166534;
+  background: #f0fdf4;
+}
+
+.toast-icon {
+  font-size: 18px;
 }
 
 /* Responsive Design */

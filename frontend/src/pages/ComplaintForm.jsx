@@ -55,6 +55,20 @@ function ComplaintForm() {
   const [files, setFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [showSuccess, setShowSuccess] = useState(false); // ADDED
+
+  // Auto-hide success toast and inline alert
+  React.useEffect(() => {
+    if (message.type === "success") {
+      setShowSuccess(true);
+      const t1 = setTimeout(() => setShowSuccess(false), 4000);
+      const t2 = setTimeout(() => setMessage({ type: "", text: "" }), 6000);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [message]);
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -95,8 +109,9 @@ function ComplaintForm() {
         },
       });
 
-      setMessage({ type: "success", text: "Complaint submitted successfully!" });
-      
+      setMessage({ type: "success", text: "Complaint submitted successfully!" }); // UPDATED
+      window.scrollTo({ top: 0, behavior: "smooth" }); // ADDED
+
       // Reset form
       setTitle("");
       setDescription("");
@@ -122,6 +137,16 @@ function ComplaintForm() {
 
   return (
     <div className="complaint-page">
+      {/* Success Toast */}
+      {showSuccess && message.type === "success" && (
+        <div className="toast-container">
+          <div className="toast toast-success" role="status" aria-live="polite">
+            <span className="toast-icon">✓</span>
+            <span>{message.text}</span>
+          </div>
+        </div>
+      )}
+
       <div className="complaint-container">
         <h2 className="complaint-title">Submit a Complaint</h2>
         <p className="complaint-subtitle">
@@ -129,7 +154,7 @@ function ComplaintForm() {
         </p>
 
         {message.text && (
-          <div className={`alert-message ${message.type}`}>
+          <div className={`alert-message ${message.type}`} role="status" aria-live="polite">
             <span className="alert-icon">
               {message.type === "success" ? "✓" : "⚠"}
             </span>

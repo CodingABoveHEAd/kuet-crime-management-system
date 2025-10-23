@@ -31,7 +31,7 @@ function Contact() {
 
   return (
     <div className="contact-page">
-      <h2 className="contact-title">📩 Contact Us</h2>
+      <h2 className="contact-title">Contact Us</h2>
       <p className="contact-desc">
         Have a question, suggestion, or complaint regarding the system? Please
         let us know — we value your feedback.

@@ -314,7 +314,7 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h2>📊 Crime Management Dashboard</h2>
+      <h2>Crime Management Dashboard</h2>
       <p>
         Welcome back, <strong>{user.name || "User"}</strong> • Role: {user.role.toUpperCase()}
       </p>
