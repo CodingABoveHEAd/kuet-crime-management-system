@@ -396,13 +396,13 @@ function Dashboard() {
         <table className="complaints-table">
           <thead>
             <tr>
-              <th>🖼️ Evidence</th>
-              <th>📋 Title</th>
-              <th>📝 Description</th>
-              <th>🏷️ Category</th>
-              <th>📊 Status</th>
-              <th>👤 Submitted By</th>
-              <th>📅 Date & Time</th>
+              <th>Evidence</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Submitted By</th>
+              <th>Date & Time</th>
               {(user.role === "admin" || user.role === "authority") && <th>⚙️ Actions</th>}
             </tr>
           </thead>
@@ -436,9 +436,9 @@ function Dashboard() {
                         value={complaint.status}
                         onChange={(e) => handleStatusChange(complaint._id, e.target.value)}
                       >
-                        <option value="Pending">⏳ Pending</option>
-                        <option value="Under Review">👀 Under Review</option>
-                        <option value="Resolved">✅ Resolved</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Resolved">Resolved</option>
                       </select>
                     </td>
                   )}

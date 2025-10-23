@@ -682,7 +682,7 @@
 /* Date Column Styling */
 .complaints-table td:nth-last-child(2) {
   color: #666;
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   font-family: 'Courier New', monospace;
 }
 

@@ -717,62 +717,7 @@ span{
   animation-delay: 0.3s;
 }
 
-/* ===== AWARENESS SECTION ===== */
-.awareness {
-  padding: 8rem 0;
-  background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  color: white;
-  margin-bottom: 100px;
-}
 
-.awareness::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -10%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: float 15s ease-in-out infinite;
-}
-
-.awareness::after {
-  content: '';
-  position: absolute;
-  bottom: -50%;
-  left: -10%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: float 12s ease-in-out infinite reverse;
-}
-
-.awareness .container {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-}
-
-.awareness .section-title {
-  color: white;
-  font-size: 2.8rem;
-  margin-bottom: 1.5rem;
-  animation: slideInDown 0.8s ease-out;
-}
-
-.awareness .section-subtitle {
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 1.2rem;
-  line-height: 1.9;
-  max-width: 800px;
-  margin: 0 auto;
-  animation: slideInUp 0.8s ease-out 0.2s both;
-}
 
 @keyframes slideInDown {
   from {
@@ -1021,6 +966,7 @@ span{
 
 @media (max-width: 480px) {
   .awareness {
+    /* background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%); */
     padding: 3rem 0;
   }
   .awareness .section-title {
