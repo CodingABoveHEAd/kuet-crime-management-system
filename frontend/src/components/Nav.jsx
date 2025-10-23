@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "../styles/componentstyles/Navbar.css";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import Logo from "./Logo"; // ADD
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -77,7 +78,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="nav-brand">
           <Link to="/" className="brand-link">
-            <span className="brand-icon">🛡️</span>
+            <Logo size={36} />
             <span className="brand-text">
               <span className="kuet-brand">KUET</span>
               <span className="cms-brand">CMS</span>
@@ -95,13 +96,11 @@ export default function Navbar() {
             <span className="nav-icon"></span>Dashboard
           </Link>
 
-
           {(userRole === "admin" || userRole === "authority") && (
             <Link to="/analytics" className="nav-link complaint-btn">
               <span className="mobile-icon">Analytics</span>
             </Link>
           )}
-
 
           {(userRole !== "admin" && userRole !== "authority") && (
             <Link to="/complaint" className="nav-link complaint-btn">

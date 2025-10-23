@@ -1031,3 +1031,31 @@ span{
     line-height: 1.6;
   }
 }
+
+/* ...existing code... */
+
+/* Contain all hero visuals to prevent horizontal scroll */
+.hero {
+  position: relative;
+  overflow: hidden; /* clips floating shapes/background */
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;        /* top:0 right:0 bottom:0 left:0 */
+  width: 100%;     /* avoid 100vw which can cause overflow */
+  height: 100%;
+}
+
+.floating-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* If any shape previously used 100vw, force it to 100% */
+.floating-shapes .shape {
+  max-width: 100%;
+}
+
+/* ...existing code... */
