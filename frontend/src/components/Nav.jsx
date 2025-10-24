@@ -108,10 +108,14 @@ export default function Navbar() {
             </Link>
           )}
 
-          <Link to="/map" className="nav-link">
+
+          {userRole === "admin" || userRole === "authority" && (
+            <Link to="/map" className="nav-link">
             <span className="nav-icon"></span>Map View
           </Link>
+          )}
 
+    
           <Link to="/about" className="nav-link">
             <span className="nav-icon"></span>About Us
           </Link>
@@ -165,26 +169,31 @@ export default function Navbar() {
       <div className={`mobile-menu ${isMenuOpen ? "active" : ""}`}>
         <div className="mobile-links">
           <Link to="/" className="mobile-link" onClick={toggleMenu}>
-            🏠 Home
+            Home
           </Link>
           <Link to="/dashboard" className="mobile-link" onClick={toggleMenu}>
-            📊 Dashboard
+            Dashboard
           </Link>
-          <Link to="/map" className="mobile-link" onClick={toggleMenu}>
-            📍 Map View
+
+           {userRole === "admin" || userRole === "authority" && (
+           <Link to="/map" className="mobile-link" onClick={toggleMenu}>
+            Map View
           </Link>
+          
+          )}
+          
           <Link
             to="/complaint"
             className="mobile-link complaint-mobile"
             onClick={toggleMenu}
           >
-            🚨 File Complaint
+            File Complaint
           </Link>
 
           {/* Contact for user */}
           {userRole !== "admin" && userRole !== "authority" && (
             <Link to="/contact" className="mobile-link" onClick={toggleMenu}>
-              ✉️ Contact Us
+              Contact Us
             </Link>
           )}
 
@@ -195,7 +204,7 @@ export default function Navbar() {
               className="mobile-link mobile-messages"
               onClick={toggleMenu}
             >
-              <span className="mobile-icon">📩 Messages</span>
+              <span className="mobile-icon">Messages</span>
               {unreadCount > 0 && (
                 <span className="message-badge-mobile">{unreadCount}</span>
               )}

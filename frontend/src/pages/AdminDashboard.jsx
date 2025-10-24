@@ -30,7 +30,7 @@ ChartJS.register(
   Filler
 );
 
-// Helpers: build YYYY-MM keys, parse various backend month formats, and build a zero-filled series
+
 const toMonthKey = (year, monthIndex0) => {
   const y = String(year);
   const m = String(monthIndex0 + 1).padStart(2, "0");
@@ -40,22 +40,20 @@ const toMonthKey = (year, monthIndex0) => {
 const parseMonthId = (id) => {
   if (!id) return null;
 
-  // String formats
   if (typeof id === "string") {
-    // "YYYY-MM"
+  
     const isoMatch = id.match(/^(\d{4})-(\d{1,2})$/);
     if (isoMatch) {
       const year = parseInt(isoMatch[1], 10);
       const monthIndex0 = parseInt(isoMatch[2], 10) - 1; // 0-based
       if (monthIndex0 >= 0 && monthIndex0 <= 11) return toMonthKey(year, monthIndex0);
     }
-    // Try Date.parse (e.g., "September 2025" or "2025-09-01")
+
     const d = new Date(id);
     if (!isNaN(d)) return toMonthKey(d.getFullYear(), d.getMonth());
     return null;
   }
 
-  // Object formats: {_id: {year: 2025, month: 9}} or {_id:{y:2025,m:9}}
   if (typeof id === "object") {
     const year = id.year ?? id.y;
     let month = id.month ?? id.m;
@@ -65,7 +63,7 @@ const parseMonthId = (id) => {
       if (monthIndex0 >= 0 && monthIndex0 <= 11) return toMonthKey(year, monthIndex0);
     }
   }
-
+  
   return null;
 };
 
@@ -80,7 +78,6 @@ const buildMonthSeries = (monthlyStats = [], monthsBack = 12) => {
     }
   }
 
-  // Build a continuous range for the last N months including current month
   const now = new Date();
   const endYear = now.getFullYear();
   const endMonth0 = now.getMonth();
@@ -93,7 +90,7 @@ const buildMonthSeries = (monthlyStats = [], monthsBack = 12) => {
     const y = d.getFullYear();
     const m0 = d.getMonth();
     const key = toMonthKey(y, m0);
-    labels.push(d.toLocaleString(undefined, { month: "short", year: "numeric" })); // e.g., "Sep 2025"
+    labels.push(d.toLocaleString(undefined, { month: "short", year: "numeric" }));
     data.push(countByKey.get(key) || 0);
   }
 
@@ -106,7 +103,6 @@ function AdminDashboard({ token }) {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  // Range in months for "Complaints Over Time"
   const [monthRange, setMonthRange] = useState(12);
 
   const fetchStats = async () => {

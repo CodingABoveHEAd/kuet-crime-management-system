@@ -29,7 +29,6 @@ function AdminMessages() {
     }
   };
 
-  // ✅ Delete after marking as read
   const handleDeleteMessage = async (messageId) => {
     try {
       setDeleting(messageId);
@@ -39,7 +38,6 @@ function AdminMessages() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Remove deleted message from UI
       setMessages((prev) => prev.filter((msg) => msg._id !== messageId));
 
       setMessage({
@@ -61,7 +59,7 @@ function AdminMessages() {
 
   return (
     <div className="admin-messages">
-      <h2>💬 User Messages</h2>
+      <h2>User Messages</h2>
 
       {message.text && (
         <div className={`message-notification ${message.type}`}>

@@ -30,10 +30,6 @@ function Dashboard() {
     "Vandalism",
     "Fraud",
     "Assault",
-    "Burglary",
-    "Cybercrime",
-    "Drug-related",
-    "Traffic Violation",
     "Harassment",
     "Other"
   ];

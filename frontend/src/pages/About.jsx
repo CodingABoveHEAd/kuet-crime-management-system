@@ -35,11 +35,11 @@ const About = () => {
         <section className="about-section">
           <h2>Features Overview</h2>
           <ul>
-            <li>🛡️ Anonymous & Secure Complaint Reporting</li>
-            <li>📍 Map-based Visualization of Reported Crimes</li>
-            <li>📊 Real-time Analytics Dashboard</li>
-            <li>👮 Admin Control for Review & Resolution</li>
-            <li>📱 Responsive Design for All Devices</li>
+            <li>Anonymous & Secure Complaint Reporting</li>
+            <li>Map-based Visualization of Reported Crimes</li>
+            <li>Real-time Analytics Dashboard</li>
+            <li>Admin Control for Review & Resolution</li>
+            <li>Responsive Design for All Devices</li>
           </ul>
         </section>
 
@@ -81,11 +81,7 @@ const About = () => {
               alt="Tech innovation session"
               className="gallery-img"
             />
-            {/* <img
-              src="/images/image5.jpg"
-              alt="Tech innovation session"
-              className="gallery-img"
-            /> */}
+           
             <img
               src="/images/image6.jpg"
               alt="Tech innovation session"
