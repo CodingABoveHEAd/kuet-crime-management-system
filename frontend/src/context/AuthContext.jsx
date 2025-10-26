@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       try {
-        const decoded = jwtDecode(token); // Changed to jwtDecode
+        const decoded = jwtDecode(token);
         
         const U = {
           id: decoded.id,

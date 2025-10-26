@@ -43,8 +43,7 @@ export default function Navbar() {
       const res = await axios.get("/api/contact/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Assuming messages that are not read have a 'read' field or you can count total
-      // Adjust based on your backend implementation
+      
       setUnreadCount(res.data.length || 0);
     } catch (error) {
       console.error("Failed to fetch unread messages:", error);
@@ -81,7 +80,7 @@ export default function Navbar() {
             <Logo size={36} />
             <span className="brand-text">
               <span className="kuet-brand">KUET</span>
-              <span className="cms-brand">CMS</span>
+              <span className="cms-brand">DETECTIVES</span>
             </span>
           </Link>
         </div>

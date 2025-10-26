@@ -129,7 +129,7 @@ function Home() {
           <div className={`hero-text ${isVisible ? "animate-in" : ""}`}>
             <h1 className="hero-title">
               <span className="kuet-text">KUET</span>
-              <span className="main-text">Crime Management System</span>
+              <span className="main-text">DETECTIVES</span>
             </h1>
             <p className="hero-subtitle">
               Advanced digital platform ensuring campus safety through
