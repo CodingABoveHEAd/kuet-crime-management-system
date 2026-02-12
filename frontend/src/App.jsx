@@ -11,17 +11,15 @@ import AdminMap from "./pages/AdminMap";
 import Contact from "./pages/Contact";
 import AdminMessages from "./pages/AdminMessages";
 import About from "./pages/About";
+import "./App.css";
 
 
 function App() {
   return (
-    <div
-      className="app-container"
-      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-    >
+    <div className="app-container">
       <Navbar />
 
-      <div style={{ flex: 1, paddingTop: "70px" }}>
+      <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -35,7 +33,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/messages" element={<AdminMessages />} />
         </Routes>
-      </div>
+      </main>
       <Footer />
     </div>
   );
