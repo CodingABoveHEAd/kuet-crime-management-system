@@ -3,7 +3,7 @@
    Animated dark/light mode switch button
    ===================================================== */
 
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../hooks/useTheme';
 import './ThemeToggle.css';
 
 export default function ThemeToggle({ className = '' }) {
