@@ -1,11 +1,14 @@
 // src/components/Footer.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaFacebook, FaTwitter, FaShieldAlt } from "react-icons/fa";
 import "../styles/componentstyles/Footer.css";
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+  
   return (
-    <footer className="footer">
+    <footer className="footer" role="contentinfo">
       <div className="footer-container">
         {/* Left Section: Logo & Description */}
         <div className="footer-section about">
@@ -17,35 +20,50 @@ function Footer() {
         </div>
 
         {/* Middle Section: Quick Links */}
-        <div className="footer-section links">
+        <nav className="footer-section links" aria-label="Footer navigation">
           <h3>Quick Links</h3>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/complaint">Complain a report</a></li>
-            <li><a href="/about">About Us</a></li>
-            <li><a href="/contact">Contact Us</a></li>
+          <ul role="list">
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/dashboard">Dashboard</Link></li>
+            <li><Link to="/complaint">Report Incident</Link></li>
+            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/contact">Contact Us</Link></li>
           </ul>
-        </div>
+        </nav>
 
         {/* Right Section: Contact Info */}
         <div className="footer-section contact">
           <h3>Contact</h3>
-          <p><FaMapMarkerAlt /> KUET, Khulna, Bangladesh</p>
-          <p><FaEnvelope /> support@kuetcrimeportal.edu.bd</p>
-          <p><FaPhoneAlt /> +880-1234-567890</p>
+          <p>
+            <FaMapMarkerAlt aria-hidden="true" />
+            <span>KUET, Khulna, Bangladesh</span>
+          </p>
+          <p>
+            <FaEnvelope aria-hidden="true" />
+            <a href="mailto:support@kuetcrimeportal.edu.bd">support@kuetcrimeportal.edu.bd</a>
+          </p>
+          <p>
+            <FaPhoneAlt aria-hidden="true" />
+            <a href="tel:+8801234567890">+880-1234-567890</a>
+          </p>
 
-          <div className="footer-social">
-            <a href="#"><FaFacebook /></a>
-            <a href="#"><FaTwitter /></a>
-            <a href="#"><FaShieldAlt /></a>
+          <div className="footer-social" role="list" aria-label="Social media links">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <FaFacebook aria-hidden="true" />
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              <FaTwitter aria-hidden="true" />
+            </a>
+            <a href="/about" aria-label="Security information">
+              <FaShieldAlt aria-hidden="true" />
+            </a>
           </div>
         </div>
       </div>
 
       {/* Bottom Copyright */}
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} KUET Crime Management Authority. All rights reserved.</p>
+        <p>© {currentYear} KUET Crime Management Authority. All rights reserved.</p>
       </div>
     </footer>
   );
